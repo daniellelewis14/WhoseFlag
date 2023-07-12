@@ -71,7 +71,7 @@ struct ContentView: View {
                                 .renderingMode(.original)
                                 .rotation3DEffect(.degrees(tapped == number ? 360 : 0), axis: (x: 0, y: 1, z: 0))
                                 .opacity(tapped == -1 || tapped == number ? 1.0 : 0.25)
-                                .scaleEffect(tapped == -1 || tapped == number ? 1.0 : 0.5)
+                                .blur(radius: tapped == -1 || tapped == number ? 0 : 3)
                                 .animation(.default, value: tapped)
                         }
                     }
