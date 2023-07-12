@@ -14,10 +14,17 @@ struct ContentView: View {
     @State private var gameOver = false
     @State private var isGameOver = ""
     
+    @State private var showAnimation = false
+    
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var userScore = 0
     @State private var questionCount = 0
+    
+    @State private var animationAmount = 0.0
+    
+    @State private var tapped = -1
+    @State private var notTapped = false
     
     
     var body: some View {
@@ -58,11 +65,19 @@ struct ContentView: View {
                     ForEach(0..<3) { number in
                         Button {
                             flagTapped(number)
+                            
                         } label: {
                             Image(countries[number])
                                 .renderingMode(.original)
+                                .rotation3DEffect(.degrees(tapped == number ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                                .opacity(tapped == -1 || tapped == number ? 1.0 : 0.25)
+                                .scaleEffect(tapped == -1 || tapped == number ? 1.0 : 0.5)
+                                .animation(.default, value: tapped)
                         }
                     }
+                    .rotation3DEffect(.degrees(animationAmount), axis: (x: 0, y: 1, z: 0))
+                    
+                    
                     
                 }
             }
@@ -87,6 +102,7 @@ struct ContentView: View {
     func askQuestion() {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+        tapped = -1
     }
     
     func finalScore() {
@@ -97,6 +113,9 @@ struct ContentView: View {
     }
     
     func flagTapped(_ number: Int) {
+        tapped = number
+        
+        
         if number == correctAnswer {
             scoreTitle = "Correct"
             userScore += 1
